@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sceno · You're invited</title>
+<meta name="description" content="Open this invite in Sceno to see the event and share photos.">
+<meta name="theme-color" content="#7A1E2C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory:#FBF6EE; --paper:#FFFDF8; --ink:#2A1A14; --inkSoft:#4A3A32; --muted:#6B5A50; --maroon:#7A1E2C; --maroonDeep:#5A1520; --line:#E4D8C8; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ivory); color: var(--ink); font-family: Inter, system-ui, sans-serif; }
+  body { min-height: 100dvh; display: flex; flex-direction: column; }
+  header { background: var(--maroon); color: var(--ivory); padding: 40px 20px 32px; text-align: center; }
+  .brand { font-family: "Cormorant Garamond", serif; font-size: 22px; letter-spacing: .08em; opacity: .85; margin: 0 0 18px; }
+  .lead { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 24px; margin: 0; }
+  h1 { font-family: "Cormorant Garamond", serif; font-weight: 600; font-size: clamp(36px, 10vw, 56px); line-height: 1.05; margin: 6px 0 10px; }
+  .meta { font-size: 15px; margin: 0; opacity: .92; }
+  main { flex: 1; width: 100%; max-width: 480px; margin: 0 auto; padding: 24px 16px 32px; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 12px; margin-bottom: 24px; }
+  /* Never crop the invite card: contain within the frame at its natural aspect ratio. */
+  .card img, .card video { display: block; width: 100%; height: auto; max-height: 70vh; object-fit: contain; border-radius: 10px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 999px; font: 600 16px Inter, sans-serif; text-decoration: none; margin-bottom: 12px; }
+  .primary { background: var(--maroon); color: var(--ivory); }
+  .primary:active { background: var(--maroonDeep); }
+  .secondary { background: transparent; color: var(--maroon); border: 1.5px solid var(--maroon); }
+  .stores { display: flex; gap: 12px; } .stores .btn { flex: 1; }
+  .hint { color: var(--muted); font-size: 14px; text-align: center; line-height: 1.5; margin: 8px 0 20px; }
+  .lang { position: absolute; top: 12px; right: 12px; background: rgba(251,246,238,.15); color: var(--ivory); border: 1px solid rgba(251,246,238,.5); border-radius: 999px; padding: 6px 12px; font: 500 14px Inter, sans-serif; cursor: pointer; }
+  .hidden { display: none !important; }
+  :lang(hi) h1, :lang(hi) .lead { font-family: "Cormorant Garamond", "Noto Serif Devanagari", serif; }
+</style>
+</head>
+<body>
+<button class="lang" id="lang" type="button" aria-label="Switch language">हिंदी</button>
+<header>
+  <p class="brand">SCENO</p>
+  <p class="lead" id="lead"></p>
+  <h1 id="title">…</h1>
+  <p class="meta" id="meta"></p>
+</header>
+<main>
+  <div class="card hidden" id="card"></div>
+  <a class="btn primary" id="open" href="#"></a>
+  <p class="hint" id="hint"></p>
+  <div class="stores">
+    <!-- PLACEHOLDER store links: replace once the app is live. -->
+    <a class="btn secondary" id="ios" href="https://apps.apple.com/app/idREPLACE_WITH_APP_STORE_ID">App Store</a>
+    <a class="btn secondary" id="android" href="https://play.google.com/store/apps/details?id=com.sceno.app">Google Play</a>
+  </div>
+</main>
+<script>
+(function () {
+  var T = {
+    en: { invited: "You're invited to", open: 'Open in Sceno', hint: "Don't have Sceno yet? Get it, then tap this link again.", bad: 'This invite link does not work', badSub: 'Ask the host to send it again, or scan their QR code.', parts: function (n) { return n === 1 ? '1 event' : n + ' events'; }, other: 'हिंदी', locale: 'en-IN' },
+    hi: { invited: 'आपको न्योता है', open: 'Sceno में खोलें', hint: 'Sceno अभी नहीं है? ऐप लें, फिर यह लिंक दोबारा खोलें।', bad: 'यह न्योते का लिंक काम नहीं कर रहा', badSub: 'मेज़बान से दोबारा भेजने को कहें, या उनका QR कोड स्कैन करें।', parts: function (n) { return n + ' कार्यक्रम'; }, other: 'English', locale: 'hi-IN' }
+  };
+  var lang = 'en';
+  try { lang = localStorage.getItem('sceno.lang') || ((navigator.language || '').indexOf('hi') === 0 ? 'hi' : 'en'); } catch (e) {}
+  var path = location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  var id = decodeURIComponent(path[0] === 'join' ? path[1] || '' : path[0] || '');
+  var data = null, missing = false;
+  var $ = function (x) { return document.getElementById(x); };
+
+  $('open').href = 'sceno://join/' + encodeURIComponent(id);
+  if (/android/i.test(navigator.userAgent)) $('ios').classList.add('hidden');
+  else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) $('android').classList.add('hidden');
+
+  function pick(v) { return v && typeof v === 'object' ? (v[lang] || v.en || '') : (v || ''); }
+  function fmt(d, o) { return new Intl.DateTimeFormat(T[lang].locale, o).format(d); }
+  function range(a, b) {
+    var same = a.toDateString() === b.toDateString();
+    var o = { day: 'numeric', month: 'short', year: 'numeric' };
+    return same ? fmt(a, o) : fmt(a, { day: 'numeric', month: 'short' }) + ' – ' + fmt(b, o);
+  }
+  function render() {
+    var t = T[lang];
+    document.documentElement.lang = lang;
+    $('lang').textContent = t.other;
+    $('open').textContent = t.open;
+    $('hint').textContent = t.hint;
+    if (missing) { $('lead').textContent = ''; $('title').textContent = t.bad; $('meta').textContent = t.badSub; $('open').classList.add('hidden'); return; }
+    if (!data) return;
+    $('lead').textContent = t.invited;
+    $('title').textContent = pick(data.title);
+    document.title = pick(data.title) + ' · Sceno';
+    var bits = [range(data.startsAt, data.endsAt), pick(data.venue) || pick(data.city)];
+    if (data.subEventCount) bits.push(t.parts(data.subEventCount));
+    $('meta').textContent = bits.filter(Boolean).join(' · ');
+  }
+  $('lang').onclick = function () { lang = lang === 'en' ? 'hi' : 'en'; try { localStorage.setItem('sceno.lang', lang); } catch (e) {} render(); };
+
+  // Firestore REST value -> plain JS.
+  function val(v) {
+    if ('stringValue' in v) return v.stringValue;
+    if ('integerValue' in v) return Number(v.integerValue);
+    if ('doubleValue' in v) return v.doubleValue;
+    if ('timestampValue' in v) return new Date(v.timestampValue);
+    if ('mapValue' in v) { var o = {}, f = v.mapValue.fields || {}; for (var k in f) o[k] = val(f[k]); return o; }
+    return null;
+  }
+  function load(cfg) {
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = local ? 'http://127.0.0.1:8085' : 'https://firestore.googleapis.com';
+    var url = base + '/v1/projects/' + cfg.projectId + '/databases/(default)/documents/invitePreviews/' + encodeURIComponent(id) + (cfg.apiKey && !local ? '?key=' + cfg.apiKey : '');
+    return fetch(url).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (doc) {
+      var f = doc.fields || {}; data = {};
+      for (var k in f) data[k] = val(f[k]);
+      if (data.coverAccent) { document.querySelector('header').style.background = data.coverAccent; }
+      var m = data.inviteMedia;
+      if (m && m.url) {
+        var el = document.createElement(m.kind === 'video' ? 'video' : 'img');
+        el.src = m.url;
+        if (m.kind === 'video') { el.controls = true; el.playsInline = true; el.muted = true; } else { el.alt = pick(data.title); }
+        $('card').appendChild(el); $('card').classList.remove('hidden');
+      }
+    });
+  }
+  render();
+  if (!id) { missing = true; render(); return; }
+  // Hosting serves the project's web config here (also in the emulator).
+  fetch('/__/firebase/init.json').then(function (r) { return r.json(); })
+    .catch(function () { return { projectId: 'demo-sceno' }; })
+    .then(load).catch(function () { missing = true; }).then(render);
+})();
+</script>
+</body>
+</html>

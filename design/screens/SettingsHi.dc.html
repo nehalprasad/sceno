@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<title>सेटिंग्स</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+Devanagari:wght@400;500;600&amp;family=Noto+Serif+Devanagari:wght@700&amp;display=swap">
+<style>body{margin:0} .row{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:10px 14px;box-sizing:border-box;border-bottom:1px solid #EFE6DA;font-size:15px;line-height:1.35;color:#2A1A14;text-decoration:none} .row:last-child{border-bottom:0} .sub{font-size:13px;color:#6B5A50} .grp{display:flex;flex-direction:column;border-radius:16px;background:#FFFDF8;border:1px solid #E4D8C8} .h{font-size:13px;font-weight:600;color:#6B5A50;padding:0 4px}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF6EE; color: #2A1A14; font-family: 'Noto Sans Devanagari', sans-serif; display: flex; flex-direction: column; gap: 8px; padding: 20px 20px 20px; overflow: hidden">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <a href="ProfileHi.dc.html" style="height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #2A1A14; text-decoration: none">वापस</a>
+    <a href="Settings.dc.html" aria-label="भाषा: हिन्दी" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #D8CBBB; background: #FFFDF8; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #2A1A14; text-decoration: none">हि</a>
+  </div>
+  <h1 style="margin: 0 0 2px; font-family: 'Noto Serif Devanagari', serif; font-size: 28px; line-height: 1.3">सेटिंग्स</h1>
+
+  <span class="h">ऐप</span>
+  <div class="grp">
+    <div class="row"><span>भाषा</span><span class="sub">हिन्दी</span></div>
+    <label class="row"><span>पूरी क्वालिटी में अपलोड करें<br><span class="sub">ज़्यादा डेटा लगेगा</span></span><input type="checkbox" style="width: 22px; height: 22px"></label>
+    <label class="row"><span>सिर्फ़ Wi-Fi पर अपलोड करें</span><input type="checkbox" style="width: 22px; height: 22px"></label>
+  </div>
+
+  <span class="h">सूचनाएँ</span>
+  <div class="grp">
+    <label class="row"><span>WhatsApp संदेश</span><input type="checkbox" checked style="width: 22px; height: 22px"></label>
+    <label class="row"><span>फ़ोन नोटिफ़िकेशन</span><input type="checkbox" checked style="width: 22px; height: 22px"></label>
+    <div class="row"><span>कार्यक्रम के दौरान चुप रखें</span><span class="sub">बंद</span></div>
+  </div>
+
+  <span class="h">निजता</span>
+  <div class="grp">
+    <label class="row"><span>फ़ोटो में मुझे ढूँढें<br><span class="sub">सेल्फ़ी से आपका चेहरा मिलाता है</span></span><input type="checkbox" style="width: 22px; height: 22px"></label>
+    <label class="row"><span>दूसरे मेरी फ़ोटो डाउनलोड कर सकें</span><input type="checkbox" checked style="width: 22px; height: 22px"></label>
+  </div>
+
+  <span class="h">मदद</span>
+  <div class="grp">
+    <a class="row" href="#"><span>मदद और सहायता</span><span class="sub">WhatsApp करें</span></a>
+    <a class="row" href="#"><span>निजता नीति और शर्तें</span><span class="sub"></span></a>
+  </div>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px; align-items: center">
+    <button style="height: 44px; border: 0; background: transparent; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #A3272F">मेरा अकाउंट और अपलोड मिटाएँ</button>
+    <span class="sub">वर्ज़न 1.0</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+rules_version = '2';
+// Layout: see src/services/fb/index.ts. Counters and roles beyond "guest" are written by Cloud Functions.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function memberDoc(cid) { return /databases/$(db)/documents/celebrations/$(cid)/members/$(request.auth.uid); }
+    function member(cid) { return signedIn() && exists(memberDoc(cid)); }
+    function role(cid) { return get(memberDoc(cid)).data.role; }
+    function isAdmin(cid) { return member(cid) && role(cid) in ['admin', 'coadmin']; }
+    function isFamily(cid) { return member(cid) && role(cid) in ['admin', 'coadmin', 'family']; }
+    // Per-guest invites: members.events is 'all' or a list of sub-event ids. Family and admins always see every part.
+    function myParts(cid) { return get(memberDoc(cid)).data.get('events', 'all'); }
+    function canSeePart(cid, sid) { return isFamily(cid) || myParts(cid) == 'all' || sid in myParts(cid); }
+    function holdUploads(cid) { return get(/databases/$(db)/documents/celebrations/$(cid)).data.get('holdUploads', false) == true; }
+    function onlyChanges(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+
+    // Public join-screen preview (title, dates, city). Written only by functions.
+    match /invitePreviews/{cid} { allow read: if true; allow write: if false; }
+
+    // OTP requests: functions only.
+    match /otp/{id} { allow read, write: if false; }
+    match /waLogins/{id} { allow read, write: if false; }
+    match /loginLimits/{id} { allow read, write: if false; }
+    match /reverify/{id} { allow read, write: if false; }
+
+    match /users/{uid} {
+      allow read: if request.auth.uid == uid;
+      // Profile edits from the app; the phone number is set by verifyOtp and never changes here.
+      allow update: if request.auth.uid == uid && request.resource.data.get('phone', null) == resource.data.get('phone', null)
+        && request.resource.data.get('pushTokens', []) is list && request.resource.data.get('pushTokens', []).size() <= 10;
+      allow create: if request.auth.uid == uid && !('phone' in request.resource.data);
+      match /notices/{nid} {
+        allow read: if request.auth.uid == uid;
+        allow update: if request.auth.uid == uid && onlyChanges(['read']);
+      }
+    }
+
+    // "My events": a person may list their own memberships across celebrations.
+    // Rules must be provable from the query, which filters on the uid field (not the doc id).
+    match /{path=**}/members/{mid} { allow read: if signedIn() && resource.data.uid == request.auth.uid; }
+
+    match /celebrations/{cid} {
+      allow read: if member(cid);
+      allow update: if isAdmin(cid) && onlyChanges(['title', 'city', 'venue', 'startsAt', 'endsAt', 'coverAccent', 'private', 'inviteMedia', 'inviteText', 'holdUploads']);
+      allow create, delete: if false; // createCelebration function
+
+      match /members/{uid} {
+        allow read: if member(cid);
+        // Admins change roles between guest/family/coadmin and remove people; nobody touches the admin.
+        allow update: if isAdmin(cid) && resource.data.role != 'admin' && onlyChanges(['role', 'relation', 'events'])
+          && request.resource.data.role in ['guest', 'family', 'coadmin'];
+        allow delete: if isAdmin(cid) && resource.data.role != 'admin';
+        allow create: if false; // joinCelebration function
+      }
+      match /invites/{iid} {
+        allow read: if isAdmin(cid);
+        allow create, update, delete: if isAdmin(cid);
+      }
+      // Invite links for chosen parts: inviteLinks/{code} { events: [sid...] }. joinCelebration reads them server-side.
+      match /inviteLinks/{code} {
+        allow read, create, delete: if isAdmin(cid);
+        allow update: if false;
+      }
+      match /subEvents/{sid} {
+        allow read: if member(cid) && (resource.data.private != true || isFamily(cid)) && canSeePart(cid, sid);
+        allow create, delete: if isAdmin(cid);
+        allow update: if isAdmin(cid) && !onlyChanges(['photoCount', 'guestCount']);
+      }
+      match /photos/{pid} {
+        // Your own uploads always; otherwise visible ones (admins see hidden/deleted), private only for family.
+        allow read: if member(cid) && (
+          resource.data.uploaderId == request.auth.uid ||
+          ((resource.data.private != true || isFamily(cid)) && canSeePart(cid, resource.data.subEventId) && (resource.data.state == 'visible' || isAdmin(cid))));
+        allow create: if member(cid)
+          && request.resource.data.uploaderId == request.auth.uid
+          && canSeePart(cid, request.resource.data.subEventId)
+          // With "hold uploads for approval" on, guests' photos start as pending; admins may publish straight away.
+          && (request.resource.data.state == 'pending' || (request.resource.data.state == 'visible' && (!holdUploads(cid) || isAdmin(cid))))
+          && request.resource.data.private == (get(/databases/$(db)/documents/celebrations/$(cid)/subEvents/$(request.resource.data.subEventId)).data.private == true);
+        allow update: if isAdmin(cid) && onlyChanges(['state', 'stateAt', 'tags']);
+        allow delete: if false; // purgePhotos / deleteAccount functions
+      }
+    }
+  }
+}

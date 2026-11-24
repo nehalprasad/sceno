@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin: delete photos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF6EE; color: #2A1A14; font-family: Inter, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+  <div style="padding: 20px 20px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E4D8C8">
+    <button style="height: 44px; padding: 0; border: 0; background: transparent; font: 600 14px Inter, sans-serif; color: #2A1A14">Cancel</button>
+    <span style="font-weight: 600">3 selected</span>
+    <button aria-label="Language: English" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 600 13px Inter, sans-serif; color: #2A1A14">EN</button>
+  </div>
+  <div style="padding: 14px 20px 8px; display: flex; justify-content: space-between; align-items: baseline">
+    <h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px">Haldi</h1>
+    <span style="font-size: 13px; color: #6B5A50">Admin view · 312 photos</span>
+  </div>
+  <span style="padding: 0 20px 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #6B5A50">10:00 to 10:30</span>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 0 20px">
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #F2C14E"></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E9A21B; outline: 3px solid #7A1E2C; outline-offset: -3px"><span aria-label="Selected" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 11px; background: #7A1E2C; color: #FBF6EE; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #D9892B"><span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 10px; border: 2px solid #FFFDF8"></span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #EFD28A; outline: 3px solid #7A1E2C; outline-offset: -3px"><span aria-label="Selected" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 11px; background: #7A1E2C; color: #FBF6EE; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">2</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #C77A23"><span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 10px; border: 2px solid #FFFDF8"></span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #F2C14E"><span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 10px; border: 2px solid #FFFDF8"></span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #D9892B; outline: 3px solid #7A1E2C; outline-offset: -3px"><span aria-label="Selected" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 11px; background: #7A1E2C; color: #FBF6EE; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">3</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E9A21B"><span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 10px; border: 2px solid #FFFDF8"></span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #EFD28A"><span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 10px; border: 2px solid #FFFDF8"></span></div>
+  </div>
+
+  <div role="dialog" aria-label="Delete 3 photos" style="position: absolute; left: 0; right: 0; bottom: 0; background: #FFFDF8; border-radius: 24px 24px 0 0; box-shadow: 0 -8px 30px rgba(42,26,20,0.15); padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 12px">
+    <h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 26px">Delete 3 photos?</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A3A32">They'll be removed from Haldi and The Wedding Story for every guest. Uploaders aren't told. You can restore them from Deleted for 30 days.</p>
+    <button style="height: 52px; border-radius: 999px; border: 0; background: #A3272F; color: #FFFDF8; font: 600 16px Inter, sans-serif">Delete 3 photos</button>
+    <button style="height: 52px; border-radius: 999px; border: 1px solid #D8CBBB; background: transparent; color: #2A1A14; font: 600 16px Inter, sans-serif">Hide instead</button>
+    <span style="font-size: 13px; color: #6B5A50; text-align: center">Hidden photos stay with the uploader but leave the album.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<title>कार्यक्रम बनाएँ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Noto+Sans+Devanagari:wght@400;600;700&amp;family=Noto+Serif+Devanagari:wght@700&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF6EE; color: #2A1A14; font-family: 'Noto Sans Devanagari', sans-serif; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <h1 style="margin: 0; font-family: 'Noto Serif Devanagari', serif; font-size: 28px">कार्यक्रम बनाएँ</h1>
+    <a href="Admin.dc.html" aria-label="भाषा: हिन्दी" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #D8CBBB; background: #FFFDF8; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #2A1A14; text-decoration: none">हि</a>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">किस तरह का?</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <button style="height: 48px; border-radius: 12px; border: 2px solid #7A1E2C; background: #F6E7E4; font: 600 14px 'Noto Sans Devanagari', sans-serif; color: #7A1E2C">शादी</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">जन्मदिन</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">पार्टी</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">ऑफ़िस</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">यात्रा</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">अन्य</button>
+    </div>
+    <span style="font-size: 13px; color: #6B5A50">शादी में हल्दी, मेहंदी, संगीत जुड़ जाते हैं। सब बदले जा सकते हैं।</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">कार्यक्रम कार्ड: हल्दी</span>
+    <div style="border-radius: 20px; overflow: hidden; border: 1px solid #E4D8C8; background: #FFFDF8">
+      <div style="height: 110px; background: #F2C14E; display: flex; align-items: flex-end; padding: 14px"><span style="font-family: 'Noto Serif Devanagari', serif; font-size: 26px; font-weight: 700">हल्दी</span></div>
+      <div style="padding: 12px 14px; font-size: 14px; line-height: 1.6; color: #4A3A32">13 दिसं · 10:00 से 13:00 · आंगन<br>ड्रेस: पीला</div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">कार्ड कवर</span>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <button style="height: 60px; border-radius: 12px; border: 2px solid #7A1E2C; background: #F6E7E4; font: 600 14px 'Noto Sans Devanagari', sans-serif; color: #7A1E2C">फ़ोटो कार्ड</button>
+      <button style="height: 60px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px 'Noto Sans Devanagari', sans-serif; color: #2A1A14">टीज़र वीडियो<br><span style="font-size: 12px; color: #6B5A50">अधिकतम 30 सेकंड</span></button>
+    </div>
+  </div>
+  <label style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; font-size: 14px">
+    <span><strong>निजी कार्यक्रम</strong><br><span style="color: #6B5A50">सिर्फ़ बुलाए गए मेहमान फ़ोटो देखें</span></span>
+    <input type="checkbox" style="width: 22px; height: 22px">
+  </label>
+  <button style="margin-top: auto; height: 54px; border-radius: 999px; border: 0; background: #7A1E2C; color: #FBF6EE; font: 600 16px 'Noto Sans Devanagari', sans-serif">बनाएँ और QR पाएँ</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

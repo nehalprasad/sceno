@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin: create event</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF6EE; color: #2A1A14; font-family: Inter, sans-serif; display: flex; flex-direction: column; gap: 16px; padding: 24px 20px">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 34px">Create an event</h1>
+    <button aria-label="Language: English" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 600 13px Inter, sans-serif; color: #2A1A14">EN</button>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">What kind?</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <button style="height: 48px; border-radius: 12px; border: 2px solid #7A1E2C; background: #F6E7E4; font: 600 14px Inter, sans-serif; color: #7A1E2C">Wedding</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Birthday</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Party</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Corporate</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Trip</button>
+      <button style="height: 48px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Other</button>
+    </div>
+    <span style="font-size: 13px; color: #6B5A50">Wedding adds Haldi, Mehendi, Sangeet and more. Edit any of them.</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">Sub-event card: Haldi</span>
+    <div style="border-radius: 20px; overflow: hidden; border: 1px solid #E4D8C8; background: #FFFDF8">
+      <div style="height: 120px; background: #F2C14E; display: flex; align-items: flex-end; padding: 14px">
+        <span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700">Haldi</span>
+      </div>
+      <div style="padding: 12px 14px; font-size: 14px; line-height: 1.5; color: #4A3A32">13 Dec · 10:00 to 13:00 · Courtyard<br>Dress: yellow</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600">Card cover</span>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <button style="height: 64px; border-radius: 12px; border: 2px solid #7A1E2C; background: #F6E7E4; font: 600 14px Inter, sans-serif; color: #7A1E2C">Photo card</button>
+      <button style="height: 64px; border-radius: 12px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 500 14px Inter, sans-serif; color: #2A1A14">Teaser video<br><span style="font-size: 12px; color: #6B5A50">30 s max</span></button>
+    </div>
+  </div>
+
+  <label style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; font-size: 14px">
+    <span><strong>Private event</strong><br><span style="color: #6B5A50">Only invited guests see its photos</span></span>
+    <input type="checkbox" style="width: 22px; height: 22px">
+  </label>
+
+  <button style="margin-top: auto; height: 54px; border-radius: 999px; border: 0; background: #7A1E2C; color: #FBF6EE; font: 600 16px Inter, sans-serif">Create and get QR</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

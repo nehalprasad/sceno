@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function member(cid) {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/celebrations/$(cid)/members/$(request.auth.uid));
+    }
+    // celebrations/{cid}/{uid}/{file}: members read; each person writes only their own folder (images/video, < 25 MB).
+    match /celebrations/{cid}/{uid}/{file} {
+      allow read: if member(cid);
+      allow write: if request.auth != null && request.auth.uid == uid && member(cid)
+        && request.resource.size < 25 * 1024 * 1024
+        && request.resource.contentType.matches('(image|video)/.*');
+    }
+    // Profile photos: anyone signed in can see them; only the owner writes.
+    match /avatars/{file} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && file == request.auth.uid + '.jpg'
+        && request.resource.size < 5 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

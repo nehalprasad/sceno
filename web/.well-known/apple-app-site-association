@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["REPLACE_WITH_APPLE_TEAM_ID.com.sceno.app"],
+        "components": [
+          { "/": "/join/*", "comment": "Explicit join path" },
+          { "/": "/.well-known/*", "exclude": true },
+          { "/": "/assets/*", "exclude": true },
+          { "/": "/*", "comment": "Invite links: https://sceno.app/<eventId>" }
+        ]
+      }
+    ]
+  }
+}

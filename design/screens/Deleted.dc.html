@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin: deleted photos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF6EE; color: #2A1A14; font-family: Inter, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+  <div style="padding: 20px 20px 12px; display: flex; justify-content: space-between; align-items: center">
+    <a href="./Dashboard.dc.html" style="height: 44px; display: flex; align-items: center; font: 600 14px Inter, sans-serif; color: #2A1A14; text-decoration: none">← Back</a>
+    <div style="display: flex; gap: 8px; align-items: center">
+      <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: #2A1A14; color: #FBF6EE; font: 600 13px Inter, sans-serif">Select</button>
+      <a href="./DeletedHi.dc.html" aria-label="Switch to Hindi" style="height: 36px; padding: 0 12px; display: flex; align-items: center; border-radius: 999px; border: 1px solid #D8CBBB; background: #FFFDF8; font: 600 13px Inter, sans-serif; color: #2A1A14; text-decoration: none">EN</a>
+    </div>
+  </div>
+  <h1 style="margin: 0; padding: 0 20px 12px; font-family: 'Cormorant Garamond', serif; font-size: 32px">Deleted</h1>
+  <div role="tablist" style="display: flex; gap: 24px; padding: 0 20px; border-bottom: 1px solid #E4D8C8">
+    <button role="tab" aria-selected="true" style="height: 44px; padding: 0; border: 0; border-bottom: 2px solid #7A1E2C; margin-bottom: -1px; background: transparent; font: 600 15px Inter, sans-serif; color: #7A1E2C">Deleted <span style="font-weight: 500">14</span></button>
+    <button role="tab" aria-selected="false" style="height: 44px; padding: 0; border: 0; background: transparent; font: 500 15px Inter, sans-serif; color: #6B5A50">Hidden <span>6</span></button>
+  </div>
+  <p style="margin: 14px 20px 0; padding: 12px 14px; border-radius: 12px; background: #F6EBD6; font-size: 13px; line-height: 1.5; color: #4A3A32">Deleted photos are removed for good after 30 days. Restore them before then to put them back in the album.</p>
+  <div style="flex: 1; overflow: hidden; padding-bottom: 110px">
+  <div style="padding: 16px 20px 8px; display: flex; justify-content: space-between; align-items: baseline">
+    <h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 22px">Haldi</h2>
+    <span style="font-size: 13px; color: #6B5A50">4 photos</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 0 20px">
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #F2C14E; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">27 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E9A21B; opacity: 1; outline: 3px solid #7A1E2C; outline-offset: -3px"><span aria-label="Selected" style="position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 10px; background: #7A1E2C; color: #FBF6EE; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">✓</span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">27 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #D9892B; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">27 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #EFD28A; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">27 days left</span></div>
+  </div>
+  <div style="padding: 16px 20px 8px; display: flex; justify-content: space-between; align-items: baseline">
+    <h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 22px">Mehendi</h2>
+    <span style="font-size: 13px; color: #6B5A50">6 photos</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 0 20px">
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #C77A23; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">12 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E4B65A; opacity: 1; outline: 3px solid #7A1E2C; outline-offset: -3px"><span aria-label="Selected" style="position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 10px; background: #7A1E2C; color: #FBF6EE; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">✓</span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">12 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #F2C14E; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">12 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E9A21B; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">12 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #D9892B; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: rgba(42,26,20,0.72); color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">12 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #EFD28A; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: #7A1E2C; color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">3 days left</span></div>
+  </div>
+  <div style="padding: 16px 20px 8px; display: flex; justify-content: space-between; align-items: baseline">
+    <h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 22px">Sangeet</h2>
+    <span style="font-size: 13px; color: #6B5A50">4 photos</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 0 20px">
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #C77A23; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: #7A1E2C; color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">2 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E4B65A; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: #7A1E2C; color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">2 days left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #F2C14E; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: #7A1E2C; color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">1 day left</span></div>
+    <div style="position: relative; aspect-ratio: 1; border-radius: 6px; background: #E9A21B; opacity: 0.85"><span style="position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; border-radius: 9px; border: 2px solid #FFFDF8"></span><span style="position: absolute; left: 4px; right: 4px; bottom: 4px; padding: 2px 4px; border-radius: 4px; background: #7A1E2C; color: #FFFDF8; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap">1 day left</span></div>
+  </div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; background: #FFFDF8; border-top: 1px solid #E4D8C8; box-shadow: 0 -8px 30px rgba(42,26,20,0.10); padding: 12px 20px 28px; display: flex; flex-direction: column; gap: 10px">
+    <span style="font-size: 13px; font-weight: 600; color: #6B5A50">2 selected</span>
+    <div style="display: flex; gap: 10px">
+      <button style="flex: 1; height: 52px; border-radius: 999px; border: 0; background: #7A1E2C; color: #FFFDF8; font: 600 16px Inter, sans-serif">Restore</button>
+      <button style="flex: 1; height: 52px; border-radius: 999px; border: 1px solid #A3272F; background: transparent; color: #A3272F; font: 600 16px Inter, sans-serif">Delete forever</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>
