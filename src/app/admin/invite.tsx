@@ -18,7 +18,7 @@ const WA_BG = '#E7DED3';
 const WA_BUBBLE = '#D9FDD3';
 
 export default function Invite() {
-  const { t, l, lang } = useLang();
+  const { t, l, lang, pn } = useLang();
   const { celebrationId } = useSession();
   const [toast, show] = useToast();
   const { data: c, reload } = useAsync(() => events.get(celebrationId), [celebrationId]);
@@ -34,7 +34,7 @@ export default function Invite() {
   const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
   const [picking, setPicking] = useState(false);
   const [parts, setParts] = useState<string[]>([]);
-  const link = admin.inviteLink(celebrationId);
+  const link = admin.inviteLink(c?.joinCode ?? celebrationId);
   const msg = custom ?? (c?.inviteTextI18n ? l(c.inviteTextI18n) : c?.inviteText) ?? (c ? inviteMessage(t, l, c) : '');
   const pending = (guests ?? []).filter((g) => !g.joined);
 
@@ -127,7 +127,7 @@ export default function Invite() {
         <Txt size={14} color={colors.muted}>{t('access.chosenSub')}</Txt>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {(subs ?? []).filter((x) => !x.private).map((x) => (
-            <Chip key={x.id} label={x.name} active={parts.includes(x.id)}
+            <Chip key={x.id} label={pn(x.name)} active={parts.includes(x.id)}
               onPress={() => setParts((p) => (p.includes(x.id) ? p.filter((y) => y !== x.id) : [...p, x.id]))} />
           ))}
         </View>

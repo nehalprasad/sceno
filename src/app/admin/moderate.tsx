@@ -9,7 +9,7 @@ import { events, moderation, photoService } from '@/services';
 import { colors, radius } from '@/theme';
 
 export default function Moderate() {
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const { width } = useWindowDimensions();
   const { celebrationId } = useSession();
   const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
@@ -46,7 +46,7 @@ export default function Moderate() {
         right={sel.length ? <Txt font="bodySemi" size={14} color={colors.maroon}>{t('moderate.selected', { count: sel.length })}</Txt> : undefined} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 8 }} style={{ flexGrow: 0 }}>
         {held?.length ? <Chip label={t('access.pendingTab', { count: held.length })} active={showHeld} onPress={() => { setSubId('__held'); setSel([]); }} /> : null}
-        {withPhotos.map((s) => <Chip key={s.id} label={s.name} active={!showHeld && active?.id === s.id} onPress={() => { setSubId(s.id); setSel([]); }} />)}
+        {withPhotos.map((s) => <Chip key={s.id} label={pn(s.name)} active={!showHeld && active?.id === s.id} onPress={() => { setSubId(s.id); setSel([]); }} />)}
       </ScrollView>
       {showHeld ? <>
         <Txt font="display" size={36} accessibilityRole="header">{t('access.pendingTab', { count: held!.length })}</Txt>

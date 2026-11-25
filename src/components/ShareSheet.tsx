@@ -28,10 +28,10 @@ export function QrCard({ c, cardRef }: { c: Celebration; cardRef?: React.RefObje
       <Txt font="display" size={30} style={{ textAlign: 'center' }}>{l(c.title)}</Txt>
       <Txt size={13} color={colors.muted}>{dateRange(t, new Date(c.startsAt), new Date(c.endsAt))} · {l(c.city)}</Txt>
       <View style={styles.qr}>
-        <QRCode value={admin.inviteLink(c.id)} size={200} color={colors.ink} backgroundColor={colors.paper} />
+        <QRCode value={admin.inviteLink(c.joinCode ?? c.id)} size={200} color={colors.ink} backgroundColor={colors.paper} />
       </View>
       <Txt font="bodySemi" size={13} color={colors.muted}>{t('invite.qrScan')}</Txt>
-      <Txt font="bodySemi" size={12} color={colors.maroon}>sceno.app/{c.id}</Txt>
+      <Txt font="bodySemi" size={12} color={colors.maroon}>sceno.app/{c.joinCode ?? c.id}</Txt>
     </View>
   );
 }
@@ -40,7 +40,7 @@ export function QrCard({ c, cardRef }: { c: Celebration; cardRef?: React.RefObje
 export function ShareSheet({ c, visible, onClose, onToast }: { c: Celebration; visible: boolean; onClose: () => void; onToast: (s: string) => void }) {
   const { t, l } = useLang();
   const ref = useRef<React.ComponentRef<typeof View>>(null);
-  const link = admin.inviteLink(c.id);
+  const link = admin.inviteLink(c.joinCode ?? c.id);
 
   async function save() {
     const perm = await MediaLibrary.requestPermissionsAsync(true);

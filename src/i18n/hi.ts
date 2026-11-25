@@ -2,6 +2,7 @@ import type { Strings } from './en';
 
 // Event names (Haldi, Mehendi, Sangeet…) are data, not strings: they stay as entered by the host.
 const hi: Strings = {
+  parts: { weddingDay: 'शादी का दिन', birthdayParty: 'जन्मदिन पार्टी', party: 'पार्टी', mainEvent: 'मुख्य कार्यक्रम', day1: 'पहला दिन' },
   common: {
     back: 'वापस',
     photos_one: '{{count}} फ़ोटो',
@@ -14,6 +15,9 @@ const hi: Strings = {
     wear: 'पहनावा: {{dress}}',
     inHours: '{{count}} घंटे में',
     inMinutes: '{{count}} मिनट में',
+    inDays_one: '{{count}} दिन में',
+    inDays_other: '{{count}} दिन में',
+    tomorrow: 'कल',
     done: 'हो गया',
     doneWithPhotos: 'हो गया · {{count}} फ़ोटो',
     yesterday: 'कल',
@@ -100,6 +104,8 @@ const hi: Strings = {
     title: 'कार्यक्रम',
     privateNote: 'निजी समारोह। लाइव लिंक परिवार ग्रुप में।',
     calendarAdded: 'आपके कैलेंडर में जुड़ गया',
+    calendarAlready: 'पहले से आपके कैलेंडर में है',
+    inCalendar: 'आपके कैलेंडर में',
   },
   event: {
     fromGuests: '{{guests}} मेहमानों की {{photos}} फ़ोटो',

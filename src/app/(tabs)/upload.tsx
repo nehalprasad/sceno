@@ -20,7 +20,7 @@ function exifDate(exif?: Record<string, unknown> | null): string | undefined {
 }
 
 export default function Upload() {
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const { celebrationId, user } = useSession();
   const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
   const [items, setItems] = useState<Item[]>([]);
@@ -160,7 +160,7 @@ export default function Upload() {
         {(subs ?? []).map((s) => (
           <Pressable key={s.id} accessibilityRole="button" onPress={() => moveTo(s)} style={({ pressed }) => [styles.pickRow, pressed && { opacity: 0.7 }]}>
             <View style={[styles.dot, { backgroundColor: s.accent }]} />
-            <Txt font="bodySemi" latin size={16} style={{ flex: 1 }}>{s.name}</Txt>
+            <Txt font="bodySemi" latin size={16} style={{ flex: 1 }}>{pn(s.name)}</Txt>
             <Icon name="chevron" size={18} color={colors.muted} />
           </Pressable>
         ))}

@@ -14,7 +14,7 @@ const SLOT = 30 * 60000;
 
 export default function EventScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t, l } = useLang();
+  const { t, l, pn } = useLang();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('all');
@@ -44,7 +44,7 @@ export default function EventScreen() {
           <LangToggle onDark />
         </View>
         {s.cover ? <PartCover cover={s.cover} accent={s.accent} style={{ width: '100%', aspectRatio: 16 / 9, borderRadius: radius.tile, marginVertical: 6 }} /> : null}
-        <Txt font="display" size={44} accessibilityRole="header" latin>{s.name}</Txt>
+        <Txt font="display" size={44} accessibilityRole="header" latin>{pn(s.name)}</Txt>
         <Txt size={14}>{dayMonth(t, new Date(s.startsAt))} · {s.timeTbd ? t('editEvent.timeTbd') : timeRangeWords(t, new Date(s.startsAt), s.endsAt ? new Date(s.endsAt) : undefined)} · {l(s.place)}</Txt>
         <Txt font="bodySemi" size={14}>{t('event.fromGuests', { photos: s.photoCount, guests: s.guestCount })}</Txt>
       </View>

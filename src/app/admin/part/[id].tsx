@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Button, Icon, Txt, useAsync } from '@/components/ui';
 import { Page, Toast, TopBar, useToast } from '@/components/kit';
 import { at, DateField } from '@/components/DateField';
+import { PlaceSearch } from '@/components/PlaceSearch';
 import { PartCover } from '@/components/PartCover';
 import { useLang } from '@/i18n';
 import { useSession } from '@/lib/session';
@@ -55,9 +56,11 @@ export default function EditPart() {
 
   async function save() {
     if (!name.trim()) return setErr(t('editEvent.errName'));
-    if (!day || !start) return setErr(t('editEvent.errTime'));
-    const startsAt = at(day, start);
-    const endsAt = end ? at(day, end) : null;
+    if (!day) return setErr(t('editEvent.errTime'));
+    // No start time yet is fine: the part stays "time to be decided" for that day.
+    const timeTbd = !start;
+    const startsAt = start ? at(day, start) : (() => { const d = new Date(day); d.setHours(0, 0, 0, 0); return d; })();
+    const endsAt = start && end ? at(day, end) : null;
     if (endsAt && endsAt <= startsAt) endsAt.setDate(endsAt.getDate() + 1); // runs past midnight
     setBusy(true);
     try {
@@ -65,7 +68,7 @@ export default function EditPart() {
       const sid = await admin.saveSubEvent(celebrationId, {
         name: name.trim(), startsAt: startsAt.toISOString(), endsAt: endsAt?.toISOString() ?? null,
         place: { en: place.trim() }, dress: dress.trim() ? { en: dress.trim() } : null, note: note.trim() ? { en: note.trim() } : null,
-        private: priv, accent, mapLink: mapLink.trim() || null,
+        private: priv, accent, mapLink: mapLink.trim() || null, timeTbd,
       }, isNew ? undefined : id);
       if (coverDirty) await admin.setPartCover(celebrationId, sid, cover ? { mediaUri: cover.url, kind: cover.kind } : { clear: true });
       router.back();
@@ -112,7 +115,8 @@ export default function EditPart() {
             <DateField label={t('editEvent.start')} mode="time" value={start} onChange={(d) => { setStart(d); setErr(''); }} />
             <DateField label={t('editEvent.end')} mode="time" value={end} onChange={setEnd} optional onClear={() => setEnd(undefined)} />
           </View>
-          {field(t('editEvent.place'), place, setPlace, t('editEvent.placePh'))}
+          <PlaceSearch label={t('editEvent.place')} value={place} placeholder={t('editEvent.placePh')} inputStyle={input}
+            onChange={(v) => { setPlace(v); setErr(''); }} onPick={(venue, link) => { setPlace(venue); setMapLink(link); setErr(''); }} />
           {field(t('partMedia.map'), mapLink, setMapLink, t('partMedia.mapPh'), false, true)}
           {field(t('editEvent.dress'), dress, setDress, t('editEvent.dressPh'))}
           {field(t('editEvent.note'), note, setNote, t('editEvent.notePh'), true)}
@@ -148,9 +152,10 @@ export default function EditPart() {
             </View>
             <Switch value={priv} onValueChange={setPriv} trackColor={{ true: colors.maroon, false: colors.lineStrong }} accessibilityLabel={t('common.familyOnly')} />
           </View>
-          {err ? <Txt size={14} color={colors.danger} accessibilityLiveRegion="polite">{err}</Txt> : null}
         </ScrollView>
-        <View style={{ paddingBottom: 16 }}><Button label={t('common.save')} icon="check" loading={busy} onPress={save} /></View>
+        <View style={{ paddingBottom: 16, gap: 8 }}>
+          {err ? <Txt size={14} color={colors.danger} accessibilityLiveRegion="polite">{err}</Txt> : null}
+          <Button label={t('common.save')} icon="check" loading={busy} onPress={save} /></View>
       </KeyboardAvoidingView>
       <Toast text={toast} />
     </Page>

@@ -65,6 +65,13 @@
           "cameraPermission": "Scan the QR code on a Sceno invite to join the event.",
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Add Sceno events to your calendar.",
+          "remindersPermission": false
+        }
       ]
     ],
     "scheme": "sceno"

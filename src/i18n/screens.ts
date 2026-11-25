@@ -27,7 +27,7 @@ export const screensEn = {
     addTitle: 'Add a part', editTitle: 'Edit this part', name: 'Name', day: 'Day', start: 'Starts', end: 'Ends (optional)',
     place: 'Place', placePh: 'Courtyard, Rambagh Palace', dress: 'Dress code', dressPh: 'Yellow; old clothes welcome',
     note: 'Note for guests', notePh: 'Anything guests should know', colour: 'Colour', privateSub: 'Only family sees it and its photos',
-    notSet: 'Not set', clear: 'Clear', errName: 'Give this part a name, like Haldi or Day 1.', errTime: 'Pick the day and start time.',
+    notSet: 'Not set', clear: 'Clear', errName: 'Give this part a name, like Haldi or Day 1.', errTime: 'Pick the day.',
     delete: 'Delete this part', cantDelete: "Can't delete yet", cantDeleteSub: 'It has {{count}} photos. Move or delete them first.',
   },
   photo: {
@@ -116,8 +116,8 @@ export const screensEn = {
   },
   guests: {
     title: 'Guests', search: 'Search guests by name', joined: 'Joined {{count}}', notJoined: 'Not joined {{count}}',
-    sort: 'Most uploads first', admins: '{{a}} admin · {{c}} co-admins', uploads: '{{count}} uploads', allEvents: 'All events',
-    more: 'More options for {{name}}', makeCo: 'Make co-admin', makeGuest: 'Make guest', remove: 'Remove from event',
+    sort: 'Most uploads first', admins_one: '{{count}} admin', admins_other: '{{count}} admins', uploads: '{{count}} uploads', allEvents: 'All events',
+    more: 'More options for {{name}}', makeCo: 'Make admin', makeGuest: 'Make guest', remove: 'Remove from event',
     pendingTitle: "{{count}} guests haven't joined yet", pendingSub: 'Send them the invite link again', remind: 'Remind on WhatsApp',
     invited: 'Invited {{when}}',
   },
@@ -165,7 +165,7 @@ export const screensHi: typeof screensEn = {
     addTitle: 'नया हिस्सा जोड़ें', editTitle: 'यह हिस्सा बदलें', name: 'नाम', day: 'दिन', start: 'शुरू', end: 'ख़त्म (ज़रूरी नहीं)',
     place: 'जगह', placePh: 'आंगन, रामबाग पैलेस', dress: 'पहनावा', dressPh: 'पीला; पुराने कपड़े चलेंगे',
     note: 'मेहमानों के लिए नोट', notePh: 'कुछ भी जो मेहमानों को पता होना चाहिए', colour: 'रंग', privateSub: 'सिर्फ़ परिवार इसे और इसकी फ़ोटो देखेगा',
-    notSet: 'तय नहीं', clear: 'हटाएँ', errName: 'इस हिस्से का नाम लिखें, जैसे Haldi या Day 1।', errTime: 'दिन और शुरू होने का समय चुनें।',
+    notSet: 'तय नहीं', clear: 'हटाएँ', errName: 'इस हिस्से का नाम लिखें, जैसे Haldi या Day 1।', errTime: 'दिन चुनें।',
     delete: 'यह हिस्सा हटाएँ', cantDelete: 'अभी नहीं हटा सकते', cantDeleteSub: 'इसमें {{count}} फ़ोटो हैं। पहले उन्हें हटाएँ या दूसरी जगह डालें।',
   },
   photo: {
@@ -254,8 +254,8 @@ export const screensHi: typeof screensEn = {
   },
   guests: {
     title: 'मेहमान', search: 'नाम से मेहमान ढूँढें', joined: 'जुड़े {{count}}', notJoined: 'नहीं जुड़े {{count}}',
-    sort: 'सबसे ज़्यादा अपलोड पहले', admins: '{{a}} एडमिन · {{c}} सह-एडमिन', uploads: '{{count}} अपलोड', allEvents: 'सभी कार्यक्रम',
-    more: '{{name}} के और विकल्प', makeCo: 'सह-एडमिन बनाएँ', makeGuest: 'मेहमान बनाएँ', remove: 'इवेंट से हटाएँ',
+    sort: 'सबसे ज़्यादा अपलोड पहले', admins_one: '{{count}} एडमिन', admins_other: '{{count}} एडमिन', uploads: '{{count}} अपलोड', allEvents: 'सभी कार्यक्रम',
+    more: '{{name}} के और विकल्प', makeCo: 'एडमिन बनाएँ', makeGuest: 'मेहमान बनाएँ', remove: 'इवेंट से हटाएँ',
     pendingTitle: '{{count}} मेहमान अभी नहीं जुड़े', pendingSub: 'उन्हें न्योते का लिंक फिर भेजें', remind: 'व्हाट्सऐप पर याद दिलाएँ',
     invited: '{{when}} बुलाया',
   },

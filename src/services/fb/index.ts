@@ -123,7 +123,7 @@ export const auth = {
 function toCelebration(id: string, d: Record<string, any>, role: Role): Celebration {
   return {
     id, title: d.title, city: d.city, venue: d.venue ?? d.city, startsAt: iso(d.startsAt), endsAt: iso(d.endsAt),
-    coverAccent: d.coverAccent ?? '#7A1E2C', myRole: role, kind: d.kind, published: !!d.published, subEventCount: d.subEventCount, guestCount: d.stats?.guests,
+    coverAccent: d.coverAccent ?? '#7A1E2C', joinCode: d.joinCode ?? undefined, myRole: role, kind: d.kind, published: !!d.published, subEventCount: d.subEventCount, guestCount: d.stats?.guests,
     inviteMedia: d.inviteMedia ?? undefined, holdUploads: d.holdUploads === true, inviteText: d.inviteText ?? undefined, inviteTextI18n: d.inviteTextI18n?.en === d.inviteText ? d.inviteTextI18n : undefined,
   };
 }
@@ -160,7 +160,13 @@ export const events = {
   /** Public invite preview, readable before sign-in (see firestore.rules: invitePreview). */
   async byInvite(code: string): Promise<Celebration | undefined> {
     const c = await getDoc(doc(fb().db, 'invitePreviews', code));
-    return c.exists() ? toCelebration(code, c.data(), 'guest') : undefined;
+    if (c.exists()) return toCelebration(code, c.data(), 'guest');
+    // A name-based code ("ishan-pinki") points at the real id.
+    const j = await getDoc(doc(fb().db, 'joinCodes', code));
+    const cid = j.exists() ? (j.data().cid as string) : undefined;
+    if (!cid) return undefined;
+    const p = await getDoc(doc(fb().db, 'invitePreviews', cid));
+    return p.exists() ? toCelebration(cid, p.data(), 'guest') : undefined;
   },
   /** `invite` is the ?i= code of a link for chosen parts; without it the guest sees every public part. */
   async join(celebrationId: string, invite?: string): Promise<void> {
@@ -368,7 +374,7 @@ export const admin = {
       endsAt: input.endsAt ? Timestamp.fromDate(new Date(input.endsAt)) : null,
       place: input.place, dress: input.dress ?? null, note: input.note ?? null, private: input.private, accent: input.accent,
       ...(input.mapLink !== undefined ? { mapLink: input.mapLink } : {}),
-      timeTbd: false,
+      timeTbd: !!input.timeTbd,
     };
     const col = collection(fb().db, 'celebrations', celebrationId, 'subEvents');
     if (id) { await updateDoc(doc(col, id), data); return id; }

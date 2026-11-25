@@ -59,6 +59,15 @@ const langListeners = new Set<(l: Lang) => void>();
 /** e.g. the session saves the choice on the user doc so invites and notices can use it. */
 export const onLanguageChange = (f: (l: Lang) => void) => { langListeners.add(f); return () => { langListeners.delete(f); }; };
 
+/** Default part names the app creates; these get translated. Host-typed names (Haldi, Sangeet) never are. */
+const DEFAULT_PARTS: Record<string, string> = {
+  'Wedding day': 'weddingDay', 'Birthday party': 'birthdayParty', Party: 'party', 'Main event': 'mainEvent', 'Day 1': 'day1',
+};
+export function partName(t: Tfn, name: string) {
+  const k = DEFAULT_PARTS[name];
+  return k ? t(`parts.${k}`) : name;
+}
+
 export function useLang() {
   const { t, i18n: inst } = useTranslation();
   const lang: Lang = isLang(inst.language) ? inst.language : 'en';
@@ -67,6 +76,8 @@ export function useLang() {
     lang,
     /** Pick the viewer's language from a data field; falls back to English. */
     l: (v: Localized | null | undefined) => (v ? (v[lang] || v.en) : ''),
+    /** A part's display name: default names translated, host names as typed. */
+    pn: (name: string) => partName(t as unknown as Tfn, name),
     /** Cycles to the next language (kept for old callers; prefer the picker). */
     toggle: () => setLanguage(LANG_CODES[(LANG_CODES.indexOf(lang) + 1) % LANG_CODES.length]),
     setLang: (next: Lang) => setLanguage(next),

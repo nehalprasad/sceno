@@ -10,7 +10,7 @@ import { admin, events, now } from '@/services';
 import { colors, radius } from '@/theme';
 
 export default function Dashboard() {
-  const { t, l } = useLang();
+  const { t, l, pn } = useLang();
   const { celebrationId } = useSession();
   const [toast, show] = useToast();
   const { data: c, reload } = useAsync(() => events.get(celebrationId), [celebrationId]);
@@ -81,12 +81,12 @@ export default function Dashboard() {
                 style={[styles.evRow, i < subs!.length - 1 && styles.line]}>
                 <View style={[styles.dot, { backgroundColor: x.accent }]} />
                 <View style={{ flex: 1 }}>
-                  <Txt font="bodySemi" size={15}>{x.name}{x.private ? ` · ${t('dash.private')}` : ''}</Txt>
+                  <Txt font="bodySemi" size={15}>{pn(x.name)}{x.private ? ` · ${t('dash.private')}` : ''}</Txt>
                   <Txt size={13} color={live ? colors.maroon : colors.muted} font={live ? 'bodySemi' : 'body'}>{status}</Txt>
                 </View>
                 {x.photoCount ? <Txt size={13} color={colors.muted}>{t('common.photos', { count: x.photoCount })}</Txt> : null}
                 <Pressable onPress={() => router.push({ pathname: '/admin/part/[id]', params: { id: x.id } })} hitSlop={8}
-                  accessibilityRole="button" accessibilityLabel={`${t('dash.edit')} ${x.name}`} style={styles.editBtn}>
+                  accessibilityRole="button" accessibilityLabel={`${t('dash.edit')} ${pn(x.name)}`} style={styles.editBtn}>
                   <Icon name="edit" size={16} color={colors.maroon} />
                 </Pressable>
               </Pressable>

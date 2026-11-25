@@ -18,7 +18,7 @@ const SOFT = '#D8CBBB';
 
 export default function PhotoViewer() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { celebrationId } = useSession();
@@ -71,12 +71,12 @@ export default function PhotoViewer() {
       <Txt size={12} color="#B9A99D" style={{ textAlign: 'center', marginTop: 8 }}>{t('photo.swipe')}</Txt>
 
       <View style={styles.info}>
-        <Txt font="display" latin size={28} color={colors.ivory}>{sub.name}</Txt>
+        <Txt font="display" latin size={28} color={colors.ivory}>{pn(sub.name)}</Txt>
         <Txt size={14} color={SOFT}>{t('photo.meta', { date: dayMonth(t, new Date(p.takenAt)), time: hhmm(new Date(p.takenAt)), name: p.uploadedBy.name })}</Txt>
         <View style={styles.actions}>
           <Button label={t('photo.download')} icon="download" variant="soft" height={44} size={14} style={{ flex: 1 }} onPress={download} />
           <Button label={t('photo.shareWa')} icon="share" height={44} size={14} style={{ flex: 1.4 }}
-            onPress={() => Share.share({ url: p.uri, message: `${sub.name} · ${p.uploadedBy.name}` })} />
+            onPress={() => Share.share({ url: p.uri, message: `${pn(sub.name)} · ${p.uploadedBy.name}` })} />
         </View>
         <View style={styles.actions}>
           <Pressable accessibilityRole="button" onPress={async () => { await moderation.report(celebrationId, p.id); show(t('photo.reported')); }} hitSlop={8} style={{ height: 40, justifyContent: 'center' }}>

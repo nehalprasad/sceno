@@ -169,24 +169,41 @@ const WEDDING = [
   { name: 'Reception', accent: '#D9B8BD', offsetH: 52, hours: 0 },
 ];
 
+/** Reserves joinCodes/{code} for this event: "ishan-pinki", then "ishan-pinki-2", "-3"... */
+async function claimJoinCode(slug: string, cid: string): Promise<string> {
+  for (let n = 1; n < 50; n++) {
+    const code = n === 1 ? slug : `${slug}-${n}`;
+    const ok = await db.runTransaction(async (tx) => {
+      const r = db.doc(`joinCodes/${code}`);
+      if ((await tx.get(r)).exists) return false;
+      tx.set(r, { cid, at: FieldValue.serverTimestamp() });
+      return true;
+    });
+    if (ok) return code;
+  }
+  return cid;
+}
+
 export const createCelebration = onCall(async (req) => {
   const uid = signedIn(req);
-  const { kind, name, city, private: priv, startsAt, parts } = req.data as { kind: string; name: string; city: string; private: boolean; startsAt?: string; parts?: string[] };
+  const { kind, name, city, private: priv, startsAt, endsAt, parts } = req.data as { kind: string; name: string; city: string; private: boolean; startsAt?: string; endsAt?: string; parts?: string[] };
   const title = String(name || '').trim().slice(0, 80);
   if (!title) throw new HttpsError('invalid-argument', 'name');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'event';
-  // Always a fresh random id: two families can share names, dates and venues without colliding.
-  void slug;
+  // Random id underneath; the link uses a readable code from the name ("ishan-pinki"), numbered if taken.
   const cref = db.collection('celebrations').doc();
+  const joinCode = await claimJoinCode(slug, cref.id);
   const parsed = startsAt ? new Date(startsAt) : null;
   const start = parsed && !isNaN(parsed.getTime()) ? parsed : new Date(Date.now() + 30 * 86400000);
-  const endsMs = kind === 'wedding' ? start.getTime() + 86400000 : start.getTime() + 5 * 3600000;
+  // The app sends 11:59 PM on the chosen day (the phone's time zone), so a one-day event stays one day.
+  const sentEnd = endsAt ? new Date(endsAt).getTime() : NaN;
+  const endsMs = sentEnd > start.getTime() && sentEnd - start.getTime() <= 86400000 ? sentEnd : start.getTime() + 5 * 3600000;
   const me = (await db.doc(`users/${uid}`).get()).data() ?? {};
   const b = db.batch();
   b.set(cref, {
     kind, title: { en: title }, city: { en: String(city || '').trim() }, venue: { en: String(city || '').trim() },
     startsAt: Timestamp.fromDate(start), endsAt: Timestamp.fromMillis(endsMs),
-    coverAccent: '#7A1E2C', ownerId: uid, published: false, private: !!priv,
+    coverAccent: '#7A1E2C', ownerId: uid, joinCode, published: false, private: !!priv,
     stats: { guests: 1, photos: 0, uploaders: 0, reported: 0 }, createdAt: FieldValue.serverTimestamp(),
   });
   b.set(cref.collection('members').doc(uid), { uid, name: me.name ?? '', phone: me.phone ?? '', relation: '', role: 'admin', uploads: 0, events: 'all', joinedAt: FieldValue.serverTimestamp() });
@@ -241,7 +258,7 @@ export const onCelebrationWritten = onDocumentWritten('celebrations/{cid}', asyn
   const d = e.data?.after.data();
   if (!d) return void (await ref.delete());
   const subs = await db.collection(`celebrations/${e.params.cid}/subEvents`).count().get();
-  await ref.set({ title: d.title, city: d.city, venue: d.venue ?? d.city, startsAt: d.startsAt, endsAt: d.endsAt, coverAccent: d.coverAccent ?? '#7A1E2C', subEventCount: subs.data().count, inviteMedia: d.inviteMedia ?? null });
+  await ref.set({ joinCode: d.joinCode ?? null, title: d.title, city: d.city, venue: d.venue ?? d.city, startsAt: d.startsAt, endsAt: d.endsAt, coverAccent: d.coverAccent ?? '#7A1E2C', subEventCount: subs.data().count, inviteMedia: d.inviteMedia ?? null });
 });
 
 export const publishStory = onCall(async (req) => {

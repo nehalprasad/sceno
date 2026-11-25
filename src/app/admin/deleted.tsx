@@ -12,7 +12,7 @@ const KEEP_DAYS = 30;
 
 export default function Deleted() {
   const { celebrationId } = useSession();
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const { width } = useWindowDimensions();
   const { data, reload } = useAsync(() => moderation.list(celebrationId), []);
   const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
@@ -48,7 +48,7 @@ export default function Deleted() {
         {groups.map(({ s, items }) => (
           <View key={s.id} style={{ gap: 8 }}>
             <View style={styles.head}>
-              <Txt font="display" latin size={22}>{s.name}</Txt>
+              <Txt font="display" latin size={22}>{pn(s.name)}</Txt>
               <Txt size={13} color={colors.muted}>{t('deleted.count', { count: items.length })}</Txt>
             </View>
             <View style={styles.grid}>

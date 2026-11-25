@@ -1,27 +1,28 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Icon, LangToggle, PhotoTile, RoundButton, Txt, useAsync } from '@/components/ui';
 import { useLang } from '@/i18n';
-import { addToCalendar, openDirections } from '@/lib/actions';
-import { partStatus, dateRange, hhmm, relativeStart, sameDay, timeRangeWords } from '@/lib/dates';
+import { addToCalendar, openDirections, useInCalendar } from '@/lib/actions';
+import { partStatus, dateRange, dayLabel, hhmm, relativeStart, sameDay, timeRangeWords } from '@/lib/dates';
 import { useSession } from '@/lib/session';
 import { Toast, useToast } from '@/components/kit';
 import { ShareSheet } from '@/components/ShareSheet';
 import { events, now, photoService, SubEvent, inbox } from '@/services';
+import { isAdminRole } from '@/services';
 import { colors, radius } from '@/theme';
 
 
 function Carousel({ sub }: { sub: SubEvent }) {
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const { data } = useAsync(() => photoService.forSubEvent(sub.id), [sub.id]);
   const n = now();
   const isYesterday = sameDay(new Date(new Date(sub.startsAt).getTime() + 86400000), n);
   return (
     <View>
       <View style={styles.rowHead}>
-        <Txt font="display" size={24} accessibilityRole="header" latin>{sub.name}</Txt>
+        <Txt font="display" size={24} accessibilityRole="header" latin>{pn(sub.name)}</Txt>
         <Link href={{ pathname: '/event/[id]', params: { id: sub.id } }} asChild>
           <Pressable hitSlop={8} accessibilityRole="link">
             <Txt font="bodySemi" size={14} color={colors.maroon}>
@@ -49,54 +50,64 @@ function Carousel({ sub }: { sub: SubEvent }) {
 export default function Home() {
   const [sharing, setSharing] = useState(false);
   const [toast, show] = useToast();
-  const { t, l } = useLang();
+  const { t, l, pn } = useLang();
   const insets = useSafeAreaInsets();
   const { user, celebrationId } = useSession();
-  const { data: c } = useAsync(() => events.get(celebrationId), [celebrationId]);
-  const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
+  const { data: c, reload: reloadC } = useAsync(() => events.get(celebrationId), [celebrationId]);
+  const { data: subs, reload: reloadSubs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
+  // Refresh when coming back from an edit screen, so a changed venue or time shows at once.
+  useFocusEffect(useCallback(() => { reloadC(); reloadSubs(); }, [reloadC, reloadSubs]));
   const { data: notices } = useAsync(() => inbox.list(), [user?.id]);
   const UNREAD = (notices ?? []).filter((x) => !x.read).length;
   const n = now();
   const live = subs?.find((s) => partStatus(s.startsAt, s.endsAt, n, s.timeTbd) === 'live');
   const past = (subs ?? []).filter((s) => s.photoCount > 0 && s !== live && new Date(s.startsAt) < n).reverse();
   const next = subs?.find((s) => new Date(s.startsAt) > n);
+  const nextInCal = useInCalendar(next?.id);
 
   return (
     <>
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: insets.top + 12, paddingBottom: 28 }}>
-      <View style={styles.header}>
-        <View style={{ flex: 1, gap: 2 }}>
-          {c ? <Txt font="bodyMedium" size={12} color={colors.muted} style={styles.caps}>{dateRange(t, new Date(c.startsAt), new Date(c.endsAt))}</Txt> : null}
-          <Link href="/my-events" asChild>
-            <Pressable accessibilityRole="link" accessibilityHint={t('home.switchEvent')}>
-              <Txt font="display" size={28} color={colors.maroon} numberOfLines={1}>{c ? l(c.title) : ' '}</Txt>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+        <View style={styles.headerTop}>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Txt font="bodyMedium" size={12} color={colors.muted} style={[styles.caps, { flexShrink: 1 }]} numberOfLines={1}>
+              {c ? dateRange(t, new Date(c.startsAt), new Date(c.endsAt)) : ' '}
+            </Txt>
+            {c && isAdminRole(c.myRole) ? (
+              <Pressable onPress={() => router.push('/admin')} accessibilityRole="link" accessibilityLabel={t('dash.youreAdmin')} hitSlop={8}
+                style={({ pressed }) => [styles.adminPill, pressed && { opacity: 0.8 }]}>
+                <Icon name="settings" size={12} color={colors.ivory} />
+                <Txt font="bodySemi" size={11} color={colors.ivory} style={{ lineHeight: 14 }}>{t('myEvents.role.admin')}</Txt>
+              </Pressable>
+            ) : null}
+          </View>
+          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+            <LangToggle />
+            <RoundButton icon="share" label={t('invite.shareEvent')} onPress={() => setSharing(true)} />
+            <RoundButton label={t('home.notifications', { count: UNREAD })} onPress={() => router.push('/notifications')}>
+              <Icon name="bell" />
+              {UNREAD ? <View style={styles.badge}><Txt font="bodyBold" size={11} color={colors.ivory} style={{ lineHeight: 14 }}>{UNREAD}</Txt></View> : null}
+            </RoundButton>
+          </View>
+        </View>
+        <Link href="/my-events" asChild>
+          <Pressable accessibilityRole="link" accessibilityHint={t('home.switchEvent')} style={({ pressed }) => [{ gap: 4 }, pressed && { opacity: 0.7 }]}>
+            <Txt font="display" size={30} color={colors.maroon} numberOfLines={2}>{c ? l(c.title) : ' '}</Txt>
+            <View style={styles.switchRow}>
               <Txt font="bodySemi" size={13} color={colors.muted}>{t('home.switchEvent')}</Txt>
-            </Pressable>
-          </Link>
-        </View>
-        <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-          <LangToggle />
-          <RoundButton icon="share" label={t('invite.shareEvent')} onPress={() => setSharing(true)} />
-          <RoundButton label={t('home.notifications', { count: UNREAD })} onPress={() => router.push('/notifications')}>
-            <Icon name="bell" />
-            {UNREAD ? <View style={styles.badge}><Txt font="bodyBold" size={11} color={colors.ivory} style={{ lineHeight: 14 }}>{UNREAD}</Txt></View> : null}
-          </RoundButton>
-        </View>
+              <Icon name="chevron" size={14} color={colors.muted} />
+            </View>
+          </Pressable>
+        </Link>
       </View>
 
-      {c && (c.myRole === 'admin' || c.myRole === 'coadmin') ? (
-        <Pressable onPress={() => router.push('/admin')} accessibilityRole="link" style={({ pressed }) => [styles.adminRow, pressed && { opacity: 0.85 }]}>
-          <Icon name="settings" size={18} color={colors.maroon} />
-          <Txt font="bodySemi" size={14} color={colors.maroon} style={{ flex: 1 }}>{t('dash.youreAdmin')}</Txt>
-          <Icon name="chevron" size={18} color={colors.maroon} />
-        </Pressable>
-      ) : null}
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 4, paddingBottom: 28 }}>
 
       {live ? (
         <View style={[styles.live, { backgroundColor: live.accent }]}>
           <View style={styles.livePill}><Txt font="bodySemi" size={12} color={colors.ivory}>{t('common.liveNow')}</Txt></View>
           <Pressable onPress={() => router.push({ pathname: '/event/[id]', params: { id: live.id } })} accessibilityRole="link">
-            <Txt font="display" size={38} accessibilityRole="header" latin>{live.name}</Txt>
+            <Txt font="display" size={38} accessibilityRole="header" latin>{pn(live.name)}</Txt>
           </Pressable>
           <Txt size={14} color={colors.ink}>
             {live.timeTbd ? t('editEvent.timeTbd') : timeRangeWords(t, new Date(live.startsAt), live.endsAt ? new Date(live.endsAt) : undefined)} · {l(live.place)}
@@ -126,12 +137,12 @@ export default function Home() {
           <View style={[styles.rowHead, { marginTop: 22 }]}><Txt font="display" size={24} accessibilityRole="header">{t('home.upNext')}</Txt></View>
           <Pressable onPress={() => addToCalendar(t, next)} style={({ pressed }) => [styles.next, pressed && { opacity: 0.85 }]} accessibilityRole="button">
             <View style={{ gap: 2, flex: 1 }}>
-              <Txt font="bodySemi" latin size={15}>{next.name}</Txt>
+              <Txt font="bodySemi" latin size={15}>{pn(next.name)}</Txt>
               <Txt size={13} color={colors.muted}>
-                {sameDay(new Date(next.startsAt), n) && new Date(next.startsAt).getHours() >= 17 ? t('common.tonight') : t('common.today')} {hhmm(new Date(next.startsAt))} · {l(next.place)}
+                {dayLabel(t, new Date(next.startsAt), n)} {hhmm(new Date(next.startsAt))} · {l(next.place)}
               </Txt>
             </View>
-            <Icon name="calendar" size={18} color={colors.maroon} />
+            <Icon name={nextInCal ? 'check' : 'calendar'} size={18} color={colors.maroon} />
             <Txt font="bodySemi" size={13} color={colors.maroon}>{relativeStart(t, new Date(next.startsAt), n)}</Txt>
           </Pressable>
         </>
@@ -144,13 +155,16 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  header: { paddingHorizontal: 20, paddingBottom: 12, gap: 6 },
+  headerTop: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  switchRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   caps: { textTransform: 'uppercase', letterSpacing: 0.9 },
   badge: { position: 'absolute', top: 1, right: 1, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.maroon, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
   live: { marginHorizontal: 20, marginTop: 4, borderRadius: radius.hero, padding: 20, gap: 10 },
   livePill: { alignSelf: 'flex-start', backgroundColor: colors.ink, paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
   rowHead: { paddingHorizontal: 20, paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   tile: { width: 132, height: 168, borderRadius: radius.card },
+  adminPill: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, height: 22, borderRadius: 11, backgroundColor: colors.maroon },
   adminRow: { marginHorizontal: 20, marginBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, height: 44, borderRadius: 12, borderWidth: 1, borderColor: colors.privateLine, backgroundColor: colors.paper },
   empty: { marginHorizontal: 20, marginTop: 24, padding: 24, gap: 14, alignItems: 'center', borderRadius: radius.panel, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.lineStrong },
   next: { marginHorizontal: 20, padding: 16, borderRadius: radius.card, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, flexDirection: 'row', alignItems: 'center', gap: 12 },

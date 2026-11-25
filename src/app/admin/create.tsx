@@ -41,8 +41,9 @@ export default function Create() {
     if (!date) return setDateErr(t('create.errDate'));
     setBusy(true);
     try {
+      const endOfDay = (d: Date) => { const e = new Date(d); e.setHours(23, 59, 0, 0); return e; };
       const start = new Date(date); start.setHours(kind === 'wedding' ? 16 : 18, 0, 0, 0);
-      const c = await admin.create({ kind, name: name.trim(), city: city.trim(), private: priv, startsAt: start.toISOString(), parts: kind === 'wedding' ? parts : undefined });
+      const c = await admin.create({ kind, name: name.trim(), city: city.trim(), private: priv, startsAt: start.toISOString(), endsAt: endOfDay(start).toISOString(), parts: kind === 'wedding' ? parts : undefined });
       // The card/video picked here becomes the invite everyone shares.
       if (coverUri) {
         await admin.setInvite(c.id, { mediaUri: coverUri, kind: cover === 'video' ? 'video' : 'image' })

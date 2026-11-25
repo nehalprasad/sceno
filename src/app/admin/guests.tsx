@@ -4,12 +4,12 @@ import { Button, Chip, Icon, Txt, useAsync } from '@/components/ui';
 import { Page, Sheet, Tabs2, Toast, TopBar, useToast } from '@/components/kit';
 import { useLang } from '@/i18n';
 import { useSession } from '@/lib/session';
-import { events, Guest, people } from '@/services';
+import { events, Guest, isAdminRole, people } from '@/services';
 import { colors, fonts, fontsFor, radius } from '@/theme';
 
 export default function Guests() {
-  const { t, lang } = useLang();
-  const { celebrationId } = useSession();
+  const { t, lang, pn } = useLang();
+  const { celebrationId, user } = useSession();
   const [toast, show] = useToast();
   const { data, reload } = useAsync(() => people.list(celebrationId), [celebrationId]);
   const [tab, setTab] = useState('joined');
@@ -28,7 +28,7 @@ export default function Guests() {
   const joined = all.filter((g) => g.joined);
   const notJoined = all.filter((g) => !g.joined);
   const list = (tab === 'joined' ? joined : notJoined).filter((g) => g.name.toLowerCase().includes(q.trim().toLowerCase()));
-  const roleLabel = (g: Guest) => t(`myEvents.role.${g.role}`);
+  const roleLabel = (g: Guest) => t(`myEvents.role.${isAdminRole(g.role) ? 'admin' : g.role}`);
 
   return (
     <Page>
@@ -44,7 +44,7 @@ export default function Guests() {
       </View>
       {tab === 'joined' ? (
         <Txt size={13} color={colors.muted} style={{ marginTop: 12 }}>
-          {t('guests.sort')} · {t('guests.admins', { a: joined.filter((g) => g.role === 'admin').length, c: joined.filter((g) => g.role === 'coadmin').length })}
+          {t('guests.sort')} · {t('guests.admins', { count: joined.filter((g) => isAdminRole(g.role)).length })}
         </Txt>
       ) : null}
       <FlatList showsVerticalScrollIndicator={false} data={list} keyExtractor={(g) => g.id} contentContainerStyle={{ paddingVertical: 12, gap: 8 }}
@@ -57,10 +57,10 @@ export default function Guests() {
                 {g.joined ? `${t('guests.uploads', { count: g.uploads })} · ${g.events === 'all' ? t('guests.allEvents') : g.events.map(partName).join(', ')}` : t('guests.invited', { when: new Date(g.invitedAt!).toLocaleDateString('en-IN') })}
               </Txt>
             </View>
-            <View style={[styles.role, g.role === 'admin' && { backgroundColor: colors.maroon, borderColor: colors.maroon }]}>
-              <Txt font="bodySemi" size={11} color={g.role === 'admin' ? colors.ivory : colors.ink}>{roleLabel(g)}</Txt>
+            <View style={[styles.role, isAdminRole(g.role) && { backgroundColor: colors.maroon, borderColor: colors.maroon }]}>
+              <Txt font="bodySemi" size={11} color={isAdminRole(g.role) ? colors.ivory : colors.ink}>{roleLabel(g)}</Txt>
             </View>
-            {g.role !== 'admin' ? (
+            {g.id !== user?.id ? (
               <Pressable onPress={() => openMenu(g)} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('guests.more', { name: g.name })} style={styles.more}>
                 <Icon name="more" size={20} />
               </Pressable>
@@ -84,14 +84,14 @@ export default function Guests() {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               <Chip label={t('access.all')} active={parts === 'all'} onPress={() => setParts('all')} />
               {(subs ?? []).filter((s) => !s.private).map((s) => (
-                <Chip key={s.id} label={s.name} active={parts !== 'all' && parts.includes(s.id)} onPress={() => togglePart(s.id)} />
+                <Chip key={s.id} label={pn(s.name)} active={parts !== 'all' && parts.includes(s.id)} onPress={() => togglePart(s.id)} />
               ))}
             </View>
             <Button label={t('access.save')} icon="check" variant="soft"
               onPress={async () => { await people.setEvents(celebrationId, menu.id, parts); setMenu(null); reload(); }} />
           </> : null}
-          <Button label={menu.role === 'coadmin' ? t('guests.makeGuest') : t('guests.makeCo')} icon="users" variant="soft"
-            onPress={async () => { await people.setRole(celebrationId, menu.id, menu.role === 'coadmin' ? 'guest' : 'coadmin'); setMenu(null); reload(); }} />
+          <Button label={isAdminRole(menu.role) ? t('guests.makeGuest') : t('guests.makeCo')} icon="users" variant="soft"
+            onPress={async () => { await people.setRole(celebrationId, menu.id, isAdminRole(menu.role) ? 'guest' : 'admin'); setMenu(null); reload(); }} />
           <Button label={t('guests.remove')} icon="trash" variant="quiet"
             onPress={() => Alert.alert(t('guests.remove'), menu.name, [{ text: t('common.cancel'), style: 'cancel' },
               { text: t('guests.remove'), style: 'destructive', onPress: async () => { await people.remove(celebrationId, menu.id); setMenu(null); reload(); } }])} />

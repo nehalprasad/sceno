@@ -1,4 +1,5 @@
 const en = {
+  parts: { weddingDay: 'Wedding day', birthdayParty: 'Birthday party', party: 'Party', mainEvent: 'Main event', day1: 'Day 1' },
   common: {
     back: 'Back',
     photos_one: '{{count}} photo',
@@ -11,6 +12,9 @@ const en = {
     wear: 'Wear: {{dress}}',
     inHours: 'in {{count}} h',
     inMinutes: 'in {{count}} min',
+    inDays_one: 'in {{count}} day',
+    inDays_other: 'in {{count}} days',
+    tomorrow: 'Tomorrow',
     done: 'Done',
     doneWithPhotos: 'Done · {{count}} photos',
     yesterday: 'Yesterday',
@@ -97,6 +101,8 @@ const en = {
     title: 'Itinerary',
     privateNote: 'Private ceremony. Livestream link in the family group.',
     calendarAdded: 'Added to your calendar',
+    calendarAlready: 'Already in your calendar',
+    inCalendar: 'In your calendar',
   },
   event: {
     fromGuests: '{{photos}} photos from {{guests}} guests',

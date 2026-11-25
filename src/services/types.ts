@@ -1,6 +1,8 @@
 import type { Localized } from '@/i18n';
 
 export type Role = 'guest' | 'family' | 'coadmin' | 'admin';
+/** All admins are equal; 'coadmin' is a legacy value treated as admin. */
+export const isAdminRole = (r?: Role) => r === 'admin' || r === 'coadmin';
 
 export interface User {
   id: string;
@@ -24,6 +26,7 @@ export interface Celebration {
   subEventCount?: number; // from the public invite preview
   guestCount?: number; // members joined (kept by functions)
   inviteMedia?: InviteMedia; // admin's invite card or teaser video
+  joinCode?: string; // name-based code for links, e.g. "ishan-pinki"
   holdUploads?: boolean; // guests' uploads wait for admin approval
   inviteText?: string; // admin's edited invite message
   inviteTextI18n?: Localized; // same, auto-translated (functions/src/translate.ts)
@@ -86,6 +89,7 @@ export interface WaLoginStart {
 export interface SubEventInput {
   name: string; startsAt: string; endsAt?: string | null; place: Localized; dress?: Localized | null; note?: Localized | null;
   private: boolean; accent: string; mapLink?: string | null;
+  timeTbd?: boolean; // only the day is known
 }
 /** Cover for one part: a new local file to upload, or clear. */
 export interface PartCoverUpdate { mediaUri?: string; kind?: 'image' | 'video'; clear?: boolean }
@@ -99,4 +103,4 @@ export interface PickedAsset { uri: string; width: number; height: number; taken
 /** id: a fixed photo id so retries are idempotent. onProgress: 0..1 of the file upload. */
 export interface UploadOpts { id?: string; onProgress?: (fraction: number) => void }
 export interface AdminStats { guests: number; photos: number; uploaders: number; waiting: number; removed: number; notJoined: number; pending?: number }
-export interface NewCelebration { kind: string; name: string; city: string; private: boolean; startsAt?: string; parts?: string[] }
+export interface NewCelebration { kind: string; name: string; city: string; private: boolean; startsAt?: string; endsAt?: string; parts?: string[] }

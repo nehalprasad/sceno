@@ -79,7 +79,7 @@ export const admin = {
     const id = input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `event-${Date.now()}`;
     const start = input.startsAt ? new Date(input.startsAt) : new Date(MOCK_NOW.getTime() + 30 * 86400000);
     const c: Celebration = { id, title: { en: input.name }, city: { en: input.city }, venue: { en: input.city }, startsAt: start.toISOString(),
-      endsAt: new Date(start.getTime() + 2 * 86400000).toISOString(), coverAccent: '#7A1E2C', myRole: 'admin', published: false };
+      endsAt: input.endsAt ?? new Date(start.getTime() + 5 * 3600000).toISOString(), coverAccent: '#7A1E2C', myRole: 'admin', published: false };
     celebrations.unshift(c);
     if (input.kind === 'wedding') {
       const presets: [string, string][] = [['Mehendi', '#A3B57A'], ['Haldi', '#F2C14E'], ['Sangeet', '#C9A9E0'], ['Pheras', '#E8A0B4'], ['Reception', '#D9B8BD']];
@@ -94,7 +94,7 @@ export const admin = {
   async saveSubEvent(celebrationId: string, input: SubEventInput, id?: string): Promise<string> {
     await wait(300);
     const existing = id ? subEvents.find((s) => s.id === id) : undefined;
-    const data = { ...input, timeTbd: false, endsAt: input.endsAt ?? undefined, dress: input.dress ?? undefined, note: input.note ?? undefined, mapLink: input.mapLink ?? undefined };
+    const data = { ...input, timeTbd: !!input.timeTbd, endsAt: input.endsAt ?? undefined, dress: input.dress ?? undefined, note: input.note ?? undefined, mapLink: input.mapLink ?? undefined };
     if (existing) { Object.assign(existing, data); return existing.id; }
     const nid = `${celebrationId}-${input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now() % 10000}`;
     subEvents.push({ id: nid, celebrationId, photoCount: 0, guestCount: 0, ...data });

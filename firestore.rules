@@ -15,6 +15,8 @@ service cloud.firestore {
     function onlyChanges(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
 
     // Public join-screen preview (title, dates, city). Written only by functions.
+    // Name-based join codes ("ishan-pinki" -> celebration id). Written only by createCelebration.
+    match /joinCodes/{code} { allow read: if true; allow write: if false; }
     match /invitePreviews/{cid} { allow read: if true; allow write: if false; }
 
     // OTP requests: functions only.
@@ -46,10 +48,11 @@ service cloud.firestore {
 
       match /members/{uid} {
         allow read: if member(cid);
-        // Admins change roles between guest/family/coadmin and remove people; nobody touches the admin.
-        allow update: if isAdmin(cid) && resource.data.role != 'admin' && onlyChanges(['role', 'relation', 'events'])
-          && request.resource.data.role in ['guest', 'family', 'coadmin'];
-        allow delete: if isAdmin(cid) && resource.data.role != 'admin';
+        // All admins are equal: any admin may change anyone's role (including other admins) or remove them,
+        // but never their own record, so an event always keeps at least one admin.
+        allow update: if isAdmin(cid) && uid != request.auth.uid && onlyChanges(['role', 'relation', 'events'])
+          && request.resource.data.role in ['guest', 'family', 'admin'];
+        allow delete: if isAdmin(cid) && uid != request.auth.uid;
         allow create: if false; // joinCelebration function
       }
       match /invites/{iid} {

@@ -11,7 +11,7 @@ import { colors, radius } from '@/theme';
 export function DownloadSheet({ visible, onClose, cid, eventName, subs, myId }: {
   visible: boolean; onClose: () => void; cid: string; eventName: string; subs: SubEvent[]; myId?: string;
 }) {
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const album = `Sceno – ${eventName}`;
   const [part, setPart] = useState('all');
   const [photos, setPhotos] = useState<Photo[] | null>(null);
@@ -52,7 +52,7 @@ export function DownloadSheet({ visible, onClose, cid, eventName, subs, myId }: 
         {!prog ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
             <Chip label={t('story.dlAll')} active={part === 'all'} onPress={() => setPart('all')} />
-            {subs.map((s) => <Chip key={s.id} label={s.name} active={part === s.id} onPress={() => setPart(s.id)} />)}
+            {subs.map((s) => <Chip key={s.id} label={pn(s.name)} active={part === s.id} onPress={() => setPart(s.id)} />)}
           </ScrollView>
         ) : (
           <View style={{ gap: 8 }} accessibilityLiveRegion="polite">

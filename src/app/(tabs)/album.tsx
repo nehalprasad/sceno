@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Button, PhotoTile, Txt, useAsync } from '@/components/ui';
 import { Page, Toast, TopBar, useToast } from '@/components/kit';
 import { DownloadSheet } from '@/components/DownloadSheet';
@@ -15,7 +15,7 @@ import { colors, radius } from '@/theme';
 
 /** Sticky header for a part: day and date on top, part name, and "ZIP" to save that part as one file. */
 function ChapterHead({ s, day, myId, toast }: { s: SubEvent; day: number; myId?: string; toast: (m: string) => void }) {
-  const { t } = useLang();
+  const { t, pn } = useLang();
   const [prog, setProg] = useState<{ done: number; total: number } | null>(null);
   const stop = useRef(false);
   const zip = async () => {
@@ -32,7 +32,7 @@ function ChapterHead({ s, day, myId, toast }: { s: SubEvent; day: number; myId?:
     <View style={styles.sticky}>
       <Pressable onPress={() => router.push({ pathname: '/event/[id]', params: { id: s.id } })} accessibilityRole="link" style={{ flex: 1 }}>
         <Txt font="bodySemi" size={12} color={colors.muted}>{t('story.day', { n: day })} · {dayMonth(t, new Date(s.startsAt), true)} · {s.photoCount}</Txt>
-        <Txt font="display" latin size={30}>{s.name}</Txt>
+        <Txt font="display" latin size={30}>{pn(s.name)}</Txt>
       </Pressable>
       <Button label={prog ? t('story.zipping', { done: prog.done, total: prog.total || '…' }) : t('story.zip')} icon={prog ? undefined : 'download'}
         variant="outline" height={36} size={13} onPress={zip} accessibilityLabel={t('story.zipLabel', { name: s.name })} />
@@ -68,8 +68,10 @@ export default function Story() {
   const { data: mine } = useAsync(() => uploads.mine(celebrationId, user?.id ?? ''), [celebrationId, user?.id]);
   const [toast, show] = useToast();
   const [dl, setDl] = useState(false);
-  const { data: c } = useAsync(() => events.get(celebrationId), [celebrationId]);
-  const { data: subs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
+  const { data: c, reload: reloadC } = useAsync(() => events.get(celebrationId), [celebrationId]);
+  const { data: subs, reload: reloadSubs } = useAsync(() => events.subEvents(celebrationId), [celebrationId]);
+  // Refresh when coming back from an edit screen, so a changed venue or time shows at once.
+  useFocusEffect(useCallback(() => { reloadC(); reloadSubs(); }, [reloadC, reloadSubs]));
   const shown = (subs ?? []).filter((s) => c?.published || new Date(s.startsAt) <= now());
   const total = (subs ?? []).reduce((a, s) => a + s.photoCount, 0);
   const days = [...new Set(shown.map((s) => new Date(s.startsAt).toDateString()))];

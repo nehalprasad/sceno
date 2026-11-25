@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useCallback } from 'react';
 import {
   ActivityIndicator, Modal, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextProps, TextStyle, View, ViewStyle,
 } from 'react-native';
@@ -203,7 +203,9 @@ export function useAsync<T>(fn: () => Promise<T>, deps: unknown[]) {
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, n]);
-  return { ...state, reload: () => setN((x) => x + 1) };
+  // Stable across renders, so screens can safely put it in effect/focus dependencies.
+  const reload = useCallback(() => setN((x) => x + 1), []);
+  return { ...state, reload };
 }
 
 const styles = StyleSheet.create({
